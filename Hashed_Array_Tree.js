@@ -40,6 +40,19 @@ HAT.prototype.add = function (val) {
 	
 	return true;
 }
+
+HAT.prototype.remove = function (index) {
+	
+}
+
+HAT.prototype.set = function (index, element) {
+	
+}
+
+HAT.prototype.set = function (index) {
+	
+}
+
 // Offset in main array(array of pointers)
 HAT.prototype.computeOffset = function (index) {
 	return Math.floor(index / this._size);
@@ -75,6 +88,56 @@ HAT.prototype._grow = function () {
 		}
 		
 		counter++;
+	}
+}
+
+// Decreases the size of the HAT by shrinking into a better fit.
+HAT.prototype.shrink = function () {
+	// If the old array was size 8, it can contains 64 items. new array will contain 16 items
+	// For size 4 number of items - 16, and it decrease to 2 size with only 4 items
+	if (this.size() > Math.pow(2, this._size) / 4) {
+		return;
+	}
+	
+	var newSize = this._size / this.scale;
+
+	if (newSize < 2) {
+		return;
+	}
+	
+	var cache = this.top;
+	var cacheSize = this._size;
+	this._size = newSize;
+	this.top = new Array(this._size);
+	
+	var counter = 0;
+	var counter2 = 0;
+	for (var i = 0; i < this._size; i++) {
+		if (!cache[counter]) {
+			break;
+		}
+		
+		for (var j = 0; j < this._size; j++) {
+			if (!cache[counter][counter2]) {
+				break;
+			}
+			
+			if (!this.top[i]) {
+				this.top[i] = new Array(this._size);
+			}
+			
+			this.top[i][j] = cache[counter][counter2];
+			counter2++;
+		}
+		// Increase index of the old array once in this.scale staps
+		if (i && !(i % this.scale)) {
+			counter++;
+		}
+		
+		// Flush the once in index of the old subArrays cacheSize times
+		if (counter2 === cacheSize) {
+			counter2 = 0;
+		}
 	}
 }
 
