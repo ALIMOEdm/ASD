@@ -1,6 +1,4 @@
-/*
-http://neerc.ifmo.ru/wiki/index.php?title=%D0%A1%D1%82%D0%B5%D0%BA
-*/
+//Stack on array
 function Stack()
 {
 	this.stack = [];
@@ -31,3 +29,47 @@ stack.push(1);
 stack.push(2);
 stack.push(3);
 console.log(stack.pop());
+
+//Stack on list
+function Node(value)
+{
+	this.value = value;
+	this.next = null;
+}
+
+function StackOnList()
+{
+	this.head = null;
+}
+
+StackOnList.prototype.push = function (val) {
+	var node = new Node(val);
+	if (!this.head) {
+		this.head = node;
+	} else {
+		var temp = this.head;
+		this.head  = node;
+		this.head.next = temp;
+	}
+}
+
+StackOnList.prototype.empty = function () {
+	return !this.head;
+}
+
+StackOnList.prototype.pop = function () {
+	if (this.empty()) {
+		throw new Error('Stack is empty');
+	}
+	
+	var temp = this.head;
+	this.head = this.head.next;
+	
+	return temp.value;
+}
+
+var stackList = new StackOnList;
+stackList.push(1);
+stackList.push(2);
+stackList.push(3);
+console.log(stackList.pop());
