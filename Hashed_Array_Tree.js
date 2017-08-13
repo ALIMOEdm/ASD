@@ -40,9 +40,30 @@ HAT.prototype.add = function (val) {
 	
 	return true;
 }
-
+// Remove element by index
 HAT.prototype.remove = function (index) {
+	var offset = this.computeOffset(index);
+	var index = this.computeIndex(index);
 	
+	var prevI = offset;
+	var prevJ = index;
+	for (var i = offset; i < this._size; i++) {
+		if (!this.top[i]) {
+			break;
+		}
+		for (var j = 0; j < this._size; j++) {
+			if (offset == i && index >= j) {
+				continue;
+			}
+			this.top[prevI][prevJ] = this.top[i][j];
+			prevI = i;
+			prevJ = j;
+		}
+	}
+	
+	this.top[prevI][prevJ] = undefined;
+	
+	this.shrink();
 }
 
 HAT.prototype.set = function (index, element) {
